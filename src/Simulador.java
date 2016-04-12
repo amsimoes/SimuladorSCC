@@ -15,9 +15,9 @@ public class Simulador {
 	// Construtor
 	public Simulador() {
 		// Inicializacao de parametros do simulador
-		media_cheg = 1;
+		media_cheg = 1.2;
 		media_serv = 1.5;
-		n_clientes = 100;
+		n_clientes = 10;
 		// Inicializacao do relogio de simulacao
 		instante = 0;
 		// Criacao do servico
@@ -45,7 +45,7 @@ public class Simulador {
 
 	// Metodo que actualiza os valores estatisticos do simulador
 	private void act_stats(){
-		servico.act_stats();
+		gasolina.act_stats();
 	}
 
 	// Metodo que apresenta os resultados de simulacao finais
@@ -53,19 +53,19 @@ public class Simulador {
 		System.out.println();
 		System.out.println("------- Resultados finais -------");
 		System.out.println();
-		servico.relat();
+		gasolina.relat();
 	}
 
 	// Metodo executivo do simulador
 	public void executa (){
 		Evento e1;
 		// Enquanto nao atender todos os clientes
-		while (servico.getAtendidos() < n_clientes){
+		while (gasolina.getAtendidos() < n_clientes){
 			lista.print();  // Mostra lista de eventos - desnecessario; e' apenas informativo
 			e1 = (Evento)(lista.removeFirst());  // Retira primeiro evento (e' o mais iminente) da lista de eventos
 			instante = e1.getInstante();         // Actualiza relogio de simulacao
 			act_stats();                         // Actualiza valores estatisticos
-			e1.executa(servico);                 // Executa evento
+			e1.executa(gasolina);                 // Executa evento
 		}
 		relat();  // Apresenta resultados de simulacao finais
 	}
@@ -84,5 +84,4 @@ public class Simulador {
 	public double getMedia_serv() {
 		return media_serv;
 	}
-
 }

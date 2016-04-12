@@ -26,6 +26,7 @@ public class ListaEventos extends LinkedList<Evento> {
     public void print (){
         int i;
         System.out.println ("--- Lista de eventos em " + s.getInstante() + " ---");
-        for (i = 0; i < size(); i++) System.out.println ("Evento " + (i+1) + " e' uma " + (Evento)(get(i)));
+        for (i = 0; i < size(); i++)
+            System.out.println ("Evento " + (i+1) + " e' uma " + (Evento)(get(i)));
     }
 }
