@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ProjetoSCC.iml" filepath="$PROJECT_DIR$/ProjetoSCC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SimuladorSCC.iml" filepath="$PROJECT_DIR$/SimuladorSCC.iml" />
     </modules>
   </component>
 </project>

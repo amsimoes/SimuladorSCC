@@ -3,15 +3,19 @@ import java.util.*;
 // Classe que representa um servico com uma fila de espera associada
 
 public class Servico {
+	private String tipo; // Tipo de serviço (Chegada, Transicao, Saida)
 	private int estado; // Variavel que regista o estado do servico: 0 - livre; 1 - ocupado
 	private int atendidos; // Numero de clientes atendidos ate ao momento
+	private int n_empregados;
 	private double temp_ult, soma_temp_esp, soma_temp_serv; // Variaveis para calculos estatisticos
 	private Vector<Cliente> fila; // Fila de espera do servico
 	private Simulador s; // Referencia para o simulador a que pertence o servico
 
 	// Construtor
-	Servico (Simulador s){
+	Servico (Simulador s, String tipo, int n_empregados){
 		this.s = s;
+		this.tipo = tipo;
+		this.n_empregados = n_empregados;
 		fila = new Vector<Cliente>(); // Cria fila de espera
 		estado = 0; // Livre
 		temp_ult = s.getInstante(); // Tempo que passou desde o ultimo evento. Neste caso 0, porque a simulacao ainda nao comecou.
@@ -22,25 +26,37 @@ public class Servico {
 
 	// Metodo que insere cliente (c) no servico
 	public void insereServico (Cliente c){
-		if (estado == 0) { // Se servico livre,
-			estado ++;     // fica ocupado e
-			// agenda saida do cliente c para daqui a s.getMedia_serv() instantes
-			s.insereEvento (new Saida(s.getInstante()+s.getMedia_serv(), s));
+		if(estado <= n_empregados) {
+			estado++;
+
+			if(tipo.equals("loja")) {
+				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja(), s, this));
+			} else {
+				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv(), s, this));
+			}
+		} else {
+			fila.addElement(c);
 		}
-		else fila.addElement(c); // Se servico ocupado, o cliente vai para a fila de espera
 	}
 
 	// Metodo que remove cliente do servico
-	public void removeServico (){
-		atendidos++; // Regista que acabou de atender + 1 cliente
+	public Cliente removeServico (){
+		Cliente c = null;
+        atendidos++; // Regista que acabou de atender + 1 cliente
 		if (fila.isEmpty()) estado --; // Se a fila esta vazia, liberta o servico
 		else { // Se nao,
 			// vai buscar proximo cliente a fila de espera e
-			// Cliente c = (Cliente)fila.firstElement();
+			c = (Cliente)fila.firstElement();
 			fila.removeElementAt(0);
-			// agenda a sua saida para daqui a s.getMedia_serv() instantes
-			s.insereEvento (new Saida(s.getInstante()+s.getMedia_serv(),s));
+
+            // agenda a sua saida para daqui a s.getMedia_serv() instantes
+            /*if(tipo.equals("loja")) {
+                s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja(),s,this));
+            } else { // Bomba -> Loja
+                s.insereEvento(new Transicao(s.getInstante() + s.getMedia_serv(), s, this));
+            }*/
 		}
+        return c;
 	}
 
 	// Metodo que calcula valores para estatisticas, em cada passo da simulacao ou evento
@@ -80,4 +96,7 @@ public class Servico {
 		return atendidos;
 	}
 
+    public String toString() {
+        return tipo.toUpperCase();
+    }
 }
