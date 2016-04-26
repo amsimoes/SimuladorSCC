@@ -30,9 +30,9 @@ public class Servico {
 			estado++;
 
 			if(tipo.equals("loja")) {
-				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja(), s, this));
+				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(2.5), s, this));
 			} else {
-				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv(), s, this));
+				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv()+dp(0.5), s, this));
 			}
 		} else {
 			fila.addElement(c);
@@ -59,6 +59,13 @@ public class Servico {
         return c;
 	}
 
+	public double dp(double media) {
+		Random random = new Random();
+		int number = random.nextInt(1 - 1 + 1) - 1;
+		number = number / number;
+		return media*number;
+	}
+
 	// Metodo que calcula valores para estatisticas, em cada passo da simulacao ou evento
 	public void act_stats(){
 		// Calcula tempo que passou desde o ultimo evento
@@ -82,6 +89,16 @@ public class Servico {
 		double comp_med_fila = soma_temp_esp / s.getInstante();
 		// Tempo medio de atendimento no servico
 		double utilizacao_serv = soma_temp_serv / s.getInstante();
+
+		if(this.tipo.equals("gasolina")) {
+			s.label_tempo_medio_espera_gasolina.setText("Tempo medio de espera: "+temp_med_fila);
+			s.label_comp_medio_fila_gasolina.setText("Comprimento medio da fila: "+comp_med_fila);
+			s.label_util_serv_gasolina.setText("Utilizacao do servico: "+utilizacao_serv);
+			s.label_n_client_fila_gasolina.setText("Tempo de simulacao: "+fila.size());
+			s.label_n_client_atend_gasolina.setText("Numero de clientes atendidos: "+atendidos);
+			s.label_temp_sim_gasolina.setText("Numero de clientes na fila: "+s.getInstante());
+		}
+
 		// Apresenta resultados
 		System.out.println("Tempo medio de espera "+temp_med_fila);
 		System.out.println("Comp. medio da fila "+comp_med_fila);
