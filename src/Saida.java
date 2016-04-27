@@ -17,7 +17,7 @@ public class Saida extends Evento {
     // Para ser usado na listagem da lista de eventos.
     @Override
     public String toString(){
-         return "Saida em " + instante;
+         return "SAIDA "+tipo+" | INSTANTE: " + instante;
     }
 
 

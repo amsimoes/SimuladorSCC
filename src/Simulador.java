@@ -90,8 +90,9 @@ public class Simulador extends InterfaceSimulador {
 		Evento e1;
 		// Enquanto nao atender todos os clientes
 		while (instante < instante_final){
-			lista.print();  // Mostra lista de eventos - desnecessario; e' apenas informativo
+			//lista.print();  // Mostra lista de eventos - desnecessario; e' apenas informativo
 			e1 = (Evento)(lista.removeFirst());  // Retira primeiro evento (e' o mais iminente) da lista de eventos
+			//System.out.println(e1.tipo+" do instante "+e1.getInstante()+" REMOVIDO da lista de eventos!");
 			instante = e1.getInstante();         // Actualiza relogio de simulacao
 			act_stats();                         // Actualiza valores estatisticos
 			e1.executa();                        // Executa evento

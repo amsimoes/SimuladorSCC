@@ -37,8 +37,12 @@ public class Servico {
 
 			if(tipo.equals("loja")) {
 				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(desvio_loja), s, this));
+				double aux = s.getMedia_serv_loja() + dp(desvio_loja);
+				System.out.println("verify loja = "+aux);
 			} else {
 				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv()+dp(desvio_bombas), s, this));
+				double aux2 = s.getMedia_serv()+dp(desvio_bombas);
+				System.out.println("verify bombas = "+aux2);
 			}
 		} else {
 			fila.addElement(c);
@@ -65,11 +69,21 @@ public class Servico {
         return c;
 	}
 
-	public double dp(double media) {
+	/*public double dp(double media) {
 		Random random = new Random();
 		int number = random.nextInt(1 - 1 + 1) - 1;
+		System.out.println("numero gerado = " + number);
 		number = number / number;
+		System.out.println("numero 2 = " + number);
+		System.out.println("Desvio padrao = "+media*number);
 		return media*number;
+	}*/
+
+	public double dp(double desvio) {
+		Random r = new Random();
+		double n = r.nextGaussian()*desvio;
+		System.out.println("Desvio = "+n);
+		return n;
 	}
 
 	// Metodo que calcula valores para estatisticas, em cada passo da simulacao ou evento

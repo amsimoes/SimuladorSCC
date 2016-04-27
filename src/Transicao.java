@@ -13,6 +13,6 @@ public class Transicao extends Evento {
 
     @Override
     public String toString() {
-        return "TRANSICAO " +tipo+" -> Loja | Instante: "+s.getInstante();
+        return "TRANSICAO " +tipo+" -> Loja | Instante: "+ instante;
     }
 }
