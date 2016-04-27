@@ -11,9 +11,9 @@ public class Simulador extends InterfaceSimulador {
 	// Cada simulador so tem uma
 	private double instante_final;
 	private double media_serv_loja;
-	private int n_empregados_gasolina;
-	private int n_empregados_gasoleo;
-	private int n_empregados_loja;
+	private int n_empregados_gasolina, n_empregados_gasoleo, n_empregados_loja;
+	private double desvio_bombas, desvio_loja;
+
 
 	// Construtor
 	public Simulador() {
@@ -31,10 +31,12 @@ public class Simulador extends InterfaceSimulador {
 		n_empregados_gasolina = Integer.parseInt(ListaDados.get(4));
 		n_empregados_gasoleo = Integer.parseInt(ListaDados.get(5));
 		n_empregados_loja = Integer.parseInt(ListaDados.get(6));
+		desvio_bombas = Double.parseDouble(ListaDados.get(7));
+		desvio_loja = Double.parseDouble(ListaDados.get(8));
 		// Criacao do servico
-		servico_gasolina = new Servico(this, "gasolina", n_empregados_gasolina);
-		servico_gasoleo = new Servico(this, "gasoleo", n_empregados_gasoleo);
-		servico_loja = new Servico(this, "loja", n_empregados_loja);
+		servico_gasolina = new Servico(this, "gasolina", n_empregados_gasolina, desvio_bombas);
+		servico_gasoleo = new Servico(this, "gasoleo", n_empregados_gasoleo, desvio_bombas);
+		servico_loja = new Servico(this, "loja", n_empregados_loja, desvio_loja);
 		// Criacao da lista de eventos
 		lista = new ListaEventos(this);
 		// Agendamento da primeira chegada

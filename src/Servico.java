@@ -10,9 +10,10 @@ public class Servico {
 	private double temp_ult, soma_temp_esp, soma_temp_serv; // Variaveis para calculos estatisticos
 	private Vector<Cliente> fila; // Fila de espera do servico
 	private Simulador s; // Referencia para o simulador a que pertence o servico
+	private double desvio_bombas, desvio_loja;
 
 	// Construtor
-	Servico (Simulador s, String tipo, int n_empregados){
+	Servico (Simulador s, String tipo, int n_empregados, double desvio){
 		this.s = s;
 		this.tipo = tipo;
 		this.n_empregados = n_empregados;
@@ -22,17 +23,22 @@ public class Servico {
 		atendidos = 0;  // Inicializacao de variaveis
 		soma_temp_esp = 0;
 		soma_temp_serv = 0;
+		if(this.tipo.equals("loja")) {
+			desvio_loja = desvio;
+		} else {
+			desvio_bombas = desvio;
+		}
 	}
 
 	// Metodo que insere cliente (c) no servico
 	public void insereServico (Cliente c){
-		if(estado <= n_empregados) {
+		if(estado < n_empregados) {
 			estado++;
 
 			if(tipo.equals("loja")) {
-				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(2.5), s, this));
+				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(desvio_loja), s, this));
 			} else {
-				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv()+dp(0.5), s, this));
+				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv()+dp(desvio_bombas), s, this));
 			}
 		} else {
 			fila.addElement(c);
@@ -50,11 +56,11 @@ public class Servico {
 			fila.removeElementAt(0);
 
             // agenda a sua saida para daqui a s.getMedia_serv() instantes
-            /*if(tipo.equals("loja")) {
-                s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja(),s,this));
+            if(tipo.equals("loja")) {
+                s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(desvio_loja),s,this));
             } else { // Bomba -> Loja
-                s.insereEvento(new Transicao(s.getInstante() + s.getMedia_serv(), s, this));
-            }*/
+                s.insereEvento(new Transicao(s.getInstante() + s.getMedia_serv()+dp(desvio_bombas), s, this));
+            }
 		}
         return c;
 	}
@@ -83,20 +89,38 @@ public class Servico {
 	public void relat (){
 		// Tempo medio de espera na fila
 		double temp_med_fila = soma_temp_esp / (atendidos+fila.size());
+		if (Double.isNaN(temp_med_fila))
+			temp_med_fila = 0;
 		// Comprimento medio da fila de espera
 		// s.getInstante() neste momento e' o valor do tempo de simulacao,
 		// uma vez que a simulacao comecou em 0 e este metodo so e' chamado no fim da simulacao
 		double comp_med_fila = soma_temp_esp / s.getInstante();
 		// Tempo medio de atendimento no servico
-		double utilizacao_serv = soma_temp_serv / s.getInstante();
+		double utilizacao_serv = 1 - (soma_temp_serv / (soma_temp_serv + soma_temp_esp));
+		System.out.println("getInstante = "+s.getInstante()+" soma_temp_servico = "+soma_temp_serv);
 
 		if(this.tipo.equals("gasolina")) {
 			s.label_tempo_medio_espera_gasolina.setText("Tempo medio de espera: "+temp_med_fila);
 			s.label_comp_medio_fila_gasolina.setText("Comprimento medio da fila: "+comp_med_fila);
 			s.label_util_serv_gasolina.setText("Utilizacao do servico: "+utilizacao_serv);
-			s.label_n_client_fila_gasolina.setText("Tempo de simulacao: "+fila.size());
+			s.label_n_client_fila_gasolina.setText("Numero de clientes na fila: "+fila.size());
 			s.label_n_client_atend_gasolina.setText("Numero de clientes atendidos: "+atendidos);
-			s.label_temp_sim_gasolina.setText("Numero de clientes na fila: "+s.getInstante());
+			s.label_temp_sim_gasolina.setText("Tempo de simulacao: "+s.getInstante());
+		} else if (this.tipo.equals("gasoleo")) {
+			System.out.println("Atendidos: "+atendidos+" Fila size: "+fila.size()+" Soma temp espera: "+soma_temp_esp);
+			s.label_tempo_medio_espera_gasoleo.setText("Tempo medio de espera: "+temp_med_fila);
+			s.label_comp_medio_fila_gasoleo.setText("Comprimento medio da fila: "+comp_med_fila);
+			s.label_util_serv_gasoleo.setText("Utilizacao do servico: "+utilizacao_serv);
+			s.label_n_client_fila_gasoleo.setText("Numero de clientes na fila: "+fila.size());
+			s.label_n_client_atend_gasoleo.setText("Numero de clientes atendidos: "+atendidos);
+			s.label_temp_sim_gasoleo.setText("Tempo de simulacao: "+s.getInstante());
+		} else if (this.tipo.equals("loja")){
+			s.label_tempo_medio_espera_loja.setText("Tempo medio de espera: "+temp_med_fila);
+			s.label_comp_medio_fila_loja.setText("Comprimento medio da fila: "+comp_med_fila);
+			s.label_util_serv_loja.setText("Utilizacao do servico: "+utilizacao_serv);
+			s.label_n_client_fila_loja.setText("Numero de clientes na fila: "+fila.size());
+			s.label_n_client_atend_loja.setText("Numero de clientes atendidos: "+atendidos);
+			s.label_temp_sim_loja.setText("Tempo de simulacao: "+s.getInstante());
 		}
 
 		// Apresenta resultados
