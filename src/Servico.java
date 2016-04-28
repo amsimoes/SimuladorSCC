@@ -11,6 +11,11 @@ public class Servico {
 	private Vector<Cliente> fila; // Fila de espera do servico
 	private Simulador s; // Referencia para o simulador a que pertence o servico
 	private double desvio_bombas, desvio_loja;
+	private static int contador_bombas, contador_loja;
+	private double media_bombas_1, media_bombas_2;
+	private double media_loja_1, media_loja_2;
+	private double[] x_normal_loja;
+	private double[] x_normal_bombas;
 
 	// Construtor
 	Servico (Simulador s, String tipo, int n_empregados, double desvio){
@@ -23,10 +28,12 @@ public class Servico {
 		atendidos = 0;  // Inicializacao de variaveis
 		soma_temp_esp = 0;
 		soma_temp_serv = 0;
+		this.contador_bombas = 0;
+		this.contador_loja = 0;
 		if(this.tipo.equals("loja")) {
-			desvio_loja = desvio;
+			this.desvio_loja = desvio;
 		} else {
-			desvio_bombas = desvio;
+			this.desvio_bombas = desvio;
 		}
 	}
 
@@ -35,14 +42,32 @@ public class Servico {
 		if(estado < n_empregados) {
 			estado++;
 
+
+
 			if(tipo.equals("loja")) {
-				s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(desvio_loja), s, this));
-				double aux = s.getMedia_serv_loja() + dp(desvio_loja);
-				System.out.println("verify loja = "+aux);
+				System.out.println("insereServico | Contador loja = "+contador_loja);
+				if(contador_loja % 2 == 0) {
+					x_normal_loja = normal(s.getMedia_serv_loja(), desvio_loja, 30);
+					media_loja_1 = x_normal_loja[0];
+					media_loja_2 = x_normal_loja[1];
+					s.insereEvento(new Saida(s.getInstante()+media_loja_1, s, this));
+					contador_loja++;
+				} else {
+					s.insereEvento(new Saida(s.getInstante()+media_loja_2, s, this));
+					contador_loja++;
+				}
 			} else {
-				s.insereEvento(new Transicao(s.getInstante()+s.getMedia_serv()+dp(desvio_bombas), s, this));
-				double aux2 = s.getMedia_serv()+dp(desvio_bombas);
-				System.out.println("verify bombas = "+aux2);
+				System.out.println("insereServico | Contador bombas = "+contador_bombas);
+				if(contador_bombas % 2 == 0) {
+					x_normal_bombas = normal(s.getMedia_serv(), desvio_bombas, 40);
+					media_bombas_1 = x_normal_bombas[0];
+					media_bombas_2 = x_normal_bombas[1];
+					s.insereEvento(new Transicao(s.getInstante()+media_bombas_1, s, this));
+					contador_bombas++;
+				} else {
+					s.insereEvento(new Transicao(s.getInstante() + media_bombas_2, s, this));
+					contador_bombas++;
+				}
 			}
 		} else {
 			fila.addElement(c);
@@ -61,29 +86,65 @@ public class Servico {
 
             // agenda a sua saida para daqui a s.getMedia_serv() instantes
             if(tipo.equals("loja")) {
-                s.insereEvento(new Saida(s.getInstante()+s.getMedia_serv_loja()+dp(desvio_loja),s,this));
+				System.out.println("removeServico | Contador loja = "+contador_loja);
+				if(contador_loja % 2 == 0) {
+					x_normal_loja = normal(s.getMedia_serv_loja(), desvio_loja, 30);
+					media_loja_1 = x_normal_loja[0];
+					media_loja_2 = x_normal_loja[1];
+					s.insereEvento(new Saida(s.getInstante()+media_loja_1, s, this));
+					contador_loja++;
+				} else {
+					s.insereEvento(new Saida(s.getInstante()+media_loja_2, s, this));
+					contador_loja++;
+				}
             } else { // Bomba -> Loja
-                s.insereEvento(new Transicao(s.getInstante() + s.getMedia_serv()+dp(desvio_bombas), s, this));
+				System.out.println("removeServico | Contador bombas = "+contador_bombas);
+				if(contador_bombas % 2 == 0) {
+					x_normal_bombas = normal(s.getMedia_serv(), desvio_bombas, 40);
+					media_bombas_1 = x_normal_bombas[0];
+					media_bombas_2 = x_normal_bombas[1];
+					s.insereEvento(new Transicao(s.getInstante()+media_bombas_1, s, this));
+					contador_bombas++;
+				} else {
+					s.insereEvento(new Transicao(s.getInstante() + media_bombas_2, s, this));
+					contador_bombas++;
+				}
             }
 		}
         return c;
 	}
 
-	/*public double dp(double media) {
-		Random random = new Random();
-		int number = random.nextInt(1 - 1 + 1) - 1;
-		System.out.println("numero gerado = " + number);
-		number = number / number;
-		System.out.println("numero 2 = " + number);
-		System.out.println("Desvio padrao = "+media*number);
-		return media*number;
-	}*/
-
-	public double dp(double desvio) {
+	public double dp(double media, double desvio) {
 		Random r = new Random();
-		double n = r.nextGaussian()*desvio;
-		System.out.println("Desvio = "+n);
+		double n;
+		do {
+			 n = r.nextGaussian()*desvio+media;
+		} while (Double.compare(n, media+desvio) > 0 || Double.compare(n, media-desvio) < 0);
 		return n;
+	}
+
+	static double[] normal(double m, double d, int randStream){
+		// System.out.println("Funcao normal a ser chamada... :-)");
+
+		double v1, v2, w;
+		double y[] = new double[2];
+		double x[] = new double[2];
+		do {
+			do {
+				v1 = 2 * RandomGenerator.rand(randStream) - 1;
+				v2 = 2 * RandomGenerator.rand(randStream) - 1;
+				w = Math.pow(v1, 2) + Math.pow(v2, 2);
+			} while (w > 1);
+			y[0] = v1 * Math.pow(((-2 * Math.log(w)) / w), 0.5);
+			y[1] = v2 * Math.pow(((-2 * Math.log(w)) / w), 0.5);
+		} while (y[0]<-1 || y[1] <-1 || y[0]>1 || y[1]>1);
+
+		x[0] = m + y[0] * d;
+		x[1] = m + y[1] * d;
+
+		/* System.out.println("x1="+x[0]+" x2="+x[1]); */
+
+		return x;
 	}
 
 	// Metodo que calcula valores para estatisticas, em cada passo da simulacao ou evento
@@ -110,7 +171,8 @@ public class Servico {
 		// uma vez que a simulacao comecou em 0 e este metodo so e' chamado no fim da simulacao
 		double comp_med_fila = soma_temp_esp / s.getInstante();
 		// Tempo medio de atendimento no servico
-		double utilizacao_serv = 1 - (soma_temp_serv / (soma_temp_serv + soma_temp_esp));
+		/* double utilizacao_serv = 1 - (soma_temp_serv / (soma_temp_serv + soma_temp_esp)); */
+		double utilizacao_serv = (soma_temp_serv / n_empregados) / s.getInstante();
 		System.out.println("getInstante = "+s.getInstante()+" soma_temp_servico = "+soma_temp_serv);
 
 		if(this.tipo.equals("gasolina")) {

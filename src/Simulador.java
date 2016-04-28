@@ -42,7 +42,7 @@ public class Simulador extends InterfaceSimulador {
 		// Agendamento da primeira chegada
 		// Se nao for feito, o simulador nao tem eventos para simular
 
-		Double rand = RandomGenerator.rand(2);
+		Double rand = RandomGenerator.rand(10);
 		if(rand <= 0.2) {
 			insereEvento (new Chegada(instante, this, servico_gasoleo));
 		} else {
