@@ -13,12 +13,14 @@ public class Simulador extends Interface {
 	private Servico servico_gasolina; // Servico - pode haver mais do que um num simulador
 	private Servico servico_gasoleo;
 	private Servico servico_loja;
+        private Servico servico_self;
 	private ListaEventos lista; // Lista de eventos - onde ficam registados todos os eventos que vao ocorrer na simulacao
 	// Cada simulador so tem uma
 	private double instante_final;
-	private double media_serv_loja;
-	private int n_empregados_gasolina, n_empregados_gasoleo, n_empregados_loja;
-	private double desvio_gasolina, desvio_gasoleo, desvio_loja;
+	private double media_serv_loja, media_serv_self;
+	private int n_empregados_gasolina, n_empregados_gasoleo, n_empregados_loja, n_empregados_self;
+	private double desvio_gasolina, desvio_gasoleo, desvio_loja, desvio_self;
+        private int cenario;
 
 
 	// Construtor
@@ -29,30 +31,43 @@ public class Simulador extends Interface {
 		instante_final = Double.parseDouble(ListaDados.get(0));
 		// Inicializacao de parametros do simulador
 		media_cheg = Double.parseDouble(ListaDados.get(1));
-                media_serv_gasolina = Double.parseDouble(ListaDados.get(2));
-                media_serv_gasoleo = Double.parseDouble(ListaDados.get(3));
-		media_serv_loja = Double.parseDouble(ListaDados.get(4));
-                desvio_gasolina = Double.parseDouble(ListaDados.get(5));
-                desvio_gasoleo = Double.parseDouble(ListaDados.get(6));
-		desvio_loja = Double.parseDouble(ListaDados.get(7));
-		n_empregados_gasolina = Integer.parseInt(ListaDados.get(8));
-		n_empregados_gasoleo = Integer.parseInt(ListaDados.get(9));
-		n_empregados_loja = Integer.parseInt(ListaDados.get(10));
-		// Criacao do servico
-		servico_gasolina = new Servico(this, "gasolina", n_empregados_gasolina, desvio_gasolina);
-		servico_gasoleo = new Servico(this, "gasoleo", n_empregados_gasoleo, desvio_gasoleo);
-		servico_loja = new Servico(this, "loja", n_empregados_loja, desvio_loja);
-		// Criacao da lista de eventos
+                
+                // Criacao da lista de eventos
 		lista = new ListaEventos(this);
-		// Agendamento da primeira chegada
-		// Se nao for feito, o simulador nao tem eventos para simular
+                this.cenario = cenario;
+                
+                if(cenario == 1) {
+                    media_serv_gasolina = Double.parseDouble(ListaDados.get(2));
+                    media_serv_gasoleo = Double.parseDouble(ListaDados.get(3));
+                    media_serv_loja = Double.parseDouble(ListaDados.get(4));
+                    desvio_gasolina = Double.parseDouble(ListaDados.get(5));
+                    desvio_gasoleo = Double.parseDouble(ListaDados.get(6));
+                    desvio_loja = Double.parseDouble(ListaDados.get(7));
+                    n_empregados_gasolina = Integer.parseInt(ListaDados.get(8));
+                    n_empregados_gasoleo = Integer.parseInt(ListaDados.get(9));
+                    n_empregados_loja = Integer.parseInt(ListaDados.get(10));
+                    // Criacao do servico
+                    servico_gasolina = new Servico(this, "gasolina", n_empregados_gasolina);
+                    servico_gasoleo = new Servico(this, "gasoleo", n_empregados_gasoleo);
+                    servico_loja = new Servico(this, "loja", n_empregados_loja);
+                    
+                    // Agendamento da primeira chegada
+                    // Se nao for feito, o simulador nao tem eventos para simular
 
-		Double rand = RandomGenerator.rand(10);
-		if(rand <= 0.2) {
-			insereEvento (new Chegada(instante, this, servico_gasoleo));
-		} else {
-			insereEvento (new Chegada(instante, this, servico_gasolina));
-		}
+                    Double rand = RandomGenerator.rand(10);
+                    if(rand <= 0.2) {
+                            insereEvento (new Chegada(instante, this, servico_gasoleo));
+                    } else {
+                            insereEvento (new Chegada(instante, this, servico_gasolina));
+                    }
+                } else {
+                    media_serv_self = Double.parseDouble(ListaDados.get(2));
+                    desvio_self = Double.parseDouble(ListaDados.get(3));
+                    n_empregados_self = Integer.parseInt(ListaDados.get(4));
+                    
+                    servico_self = new Servico(this, "self", n_empregados_self);
+                    insereEvento (new Chegada(instante, this, servico_self));
+                }
 	}
 
 	// programa principal
@@ -67,23 +82,29 @@ public class Simulador extends Interface {
 
 	// Metodo que actualiza os valores estatisticos do simulador
 	private void act_stats(){
-		servico_gasolina.act_stats();
-		servico_gasoleo.act_stats();
-		servico_loja.act_stats();
+            //System.out.println("Actualiza Stats!");
+            if(cenario == 1) {
+               servico_gasolina.act_stats();
+                servico_gasoleo.act_stats();
+                servico_loja.act_stats(); 
+            } else
+                servico_self.act_stats();
+            //System.out.println("Fim Stats!");
 	}
 
 	// Metodo que apresenta os resultados de simulacao finais
 	public String relat (){
-		System.out.println();
-		System.out.println("------- Resultados finais GASOLINA -------");
-		String s1 = servico_gasolina.relat();
-		System.out.println();
-		System.out.println("------- Resultados finais GASOLEO -------");
+            String res;
+            if (cenario == 1) {
+                String s1 = servico_gasolina.relat();
 		String s2 = servico_gasoleo.relat();
-		System.out.println();
-		System.out.println("------- Resultados finais LOJA -------");
 		String s3 = servico_loja.relat();
-                return s1+s2+s3;
+                res = s1+s2+s3;
+            } else {
+                String s4 = servico_self.relat();
+                res = s4;
+            }  
+            return res;
 	}
 
 	// Metodo executivo do simulador
@@ -121,7 +142,27 @@ public class Simulador extends Interface {
 	public double getMedia_serv_loja() {
 		return media_serv_loja;
 	}
+        
+        public double getMedia_serv_self() {
+                return media_serv_self;
+        }
 
+        public double getDesvio_gasolina() {
+            return desvio_gasolina;
+        }
+
+        public double getDesvio_gasoleo() {
+            return desvio_gasoleo;
+        }
+
+        public double getDesvio_loja() {
+            return desvio_loja;
+        }
+
+        public double getDesvio_self() {
+            return desvio_self;
+        }
+        
 	public Servico getServico_gasolina() {
 		return servico_gasolina;
 	}
@@ -131,4 +172,7 @@ public class Simulador extends Interface {
 	public Servico getServico_loja() {
 		return servico_loja;
 	}
+        public Servico getServico_self() {
+                return servico_self;
+        }
 }
