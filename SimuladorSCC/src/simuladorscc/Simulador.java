@@ -22,7 +22,7 @@ public class Simulador extends Interface {
 	private double desvio_gasolina, desvio_gasoleo, desvio_loja, desvio_self;
         private int cenario;
 
-
+        
 	// Construtor
 	public Simulador(ArrayList<String> ListaDados, int cenario) {
 		//super();

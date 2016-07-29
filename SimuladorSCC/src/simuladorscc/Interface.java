@@ -91,7 +91,7 @@ public class Interface extends javax.swing.JFrame {
     
     public static void initInterface() {
         Interface I = new Interface();
-        I.setResizable(false);
+        I.setResizable(true);
         I.setTitle("Simulador Bombas de Gasolina");
         //setContentPane(I);
         I.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -223,7 +223,7 @@ public class Interface extends javax.swing.JFrame {
         label_desvio_gasolina.setText("Desvio Padrao:");
 
         label_empregados_gasolina.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        label_empregados_gasolina.setText("Nº Empregados:");
+        label_empregados_gasolina.setText("Nº Bombas:");
 
         javax.swing.GroupLayout Panel_GasolinaLayout = new javax.swing.GroupLayout(Panel_Gasolina);
         Panel_Gasolina.setLayout(Panel_GasolinaLayout);
@@ -280,7 +280,7 @@ public class Interface extends javax.swing.JFrame {
         label_desvio_loja.setText("Desvio Padrao:");
 
         label_empregados_loja.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        label_empregados_loja.setText("Nº Empregados:");
+        label_empregados_loja.setText("Nº Caixas:");
 
         javax.swing.GroupLayout Panel_LojaLayout = new javax.swing.GroupLayout(Panel_Loja);
         Panel_Loja.setLayout(Panel_LojaLayout);
@@ -342,7 +342,7 @@ public class Interface extends javax.swing.JFrame {
         label_desvio_gasoleo.setText("Desvio Padrao:");
 
         label_empregados_gasoleo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        label_empregados_gasoleo.setText("Nº Empregados:");
+        label_empregados_gasoleo.setText("Nº Bombas:");
 
         javax.swing.GroupLayout Panel_GasoleoLayout = new javax.swing.GroupLayout(Panel_Gasoleo);
         Panel_Gasoleo.setLayout(Panel_GasoleoLayout);
@@ -489,7 +489,7 @@ public class Interface extends javax.swing.JFrame {
         label_desvio_self.setText("Desvio Padrao:");
 
         label_empregados_self.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        label_empregados_self.setText("Nº Empregados:");
+        label_empregados_self.setText("Nº Postos:");
 
         javax.swing.GroupLayout Panel_Gasoleo1Layout = new javax.swing.GroupLayout(Panel_Gasoleo1);
         Panel_Gasoleo1.setLayout(Panel_Gasoleo1Layout);

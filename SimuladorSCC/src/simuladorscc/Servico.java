@@ -47,7 +47,7 @@ public class Servico {
 			estado++;
 
 			if(tipo.equals("loja")) {
-				System.out.println("insereServico | Contador loja = "+contador_loja);
+				//System.out.println("insereServico | Contador loja = "+contador_loja);
 				if(contador_loja % 2 == 0) {
 					x_normal_loja = Aleatorio.normal(s.getMedia_serv_loja(), s.getDesvio_loja(), 30);
 					media_loja_1 = x_normal_loja[0];
@@ -59,7 +59,7 @@ public class Servico {
 					contador_loja++;
 				}
 			} else if (tipo.equals("gasolina")) {
-				System.out.println("insereServico | Contador gasolina = "+contador_gasolina);
+				//System.out.println("insereServico | Contador gasolina = "+contador_gasolina);
 				if(contador_gasolina % 2 == 0) {
 					x_normal_gasolina = Aleatorio.normal(s.getMedia_serv_gasolina(), s.getDesvio_gasolina(), 10);
 					media_gasolina_1 = x_normal_gasolina[0];
@@ -71,7 +71,7 @@ public class Servico {
 					contador_gasolina++;
 				}
 			} else if (tipo.equals("gasoleo")) {
-                                System.out.println("insereServico | Contador gasoleo = "+contador_gasoleo);
+                                //System.out.println("insereServico | Contador gasoleo = "+contador_gasoleo);
 				if(contador_gasoleo % 2 == 0) {
 					x_normal_gasoleo = Aleatorio.normal(s.getMedia_serv_gasoleo(), s.getDesvio_gasoleo(), 20);
 					media_gasoleo_1 = x_normal_gasoleo[0];
@@ -112,7 +112,7 @@ public class Servico {
 
                     // agenda a sua saida para daqui a s.getMedia_serv() instantes
                     if(tipo.equals("loja")) {
-				System.out.println("insereServico | Contador loja = "+contador_loja);
+				//System.out.println("insereServico | Contador loja = "+contador_loja);
 				if(contador_loja % 2 == 0) {
 					x_normal_loja = Aleatorio.normal(s.getMedia_serv_loja(), s.getDesvio_loja(), 30);
 					media_loja_1 = x_normal_loja[0];
@@ -124,7 +124,7 @@ public class Servico {
 					contador_loja++;
 				}
 			} else if (tipo.equals("gasolina")) {
-				System.out.println("insereServico | Contador bombas = "+contador_gasolina);
+				//System.out.println("insereServico | Contador bombas = "+contador_gasolina);
 				if(contador_gasolina % 2 == 0) {
 					x_normal_gasolina = Aleatorio.normal(s.getMedia_serv_gasolina(), s.getDesvio_gasolina(), 20);
 					media_gasolina_1 = x_normal_gasolina[0];
@@ -136,7 +136,7 @@ public class Servico {
 					contador_gasolina++;
 				}
 			} else if (tipo.equals("gasoleo")) {
-                                System.out.println("insereServico | Contador gasoleo = "+contador_gasoleo);
+                                //System.out.println("insereServico | Contador gasoleo = "+contador_gasoleo);
 				if(contador_gasoleo % 2 == 0) {
 					x_normal_gasoleo = Aleatorio.normal(s.getMedia_serv_gasoleo(), s.getDesvio_gasoleo(), 10);
 					media_gasoleo_1 = x_normal_gasoleo[0];
@@ -204,10 +204,10 @@ public class Servico {
 
 		// Apresenta resultados
                 res = "--- "+tipo.toUpperCase()+" ---\n";
-                res += "Tempo medio de espera "+temp_med_fila+"\n";
-                res += "Comp. medio da fila "+comp_med_fila+"\n";
-                res += "Utilizacao do servico "+utilizacao_serv+"\n";
-                res += "Tempo de simulacao "+s.getInstante()+"\n";
+                res += "Tempo medio de espera "+String.format("%.4f", temp_med_fila) +"\n";
+                res += "Comp. medio da fila "+String.format("%.4f", comp_med_fila)+"\n";
+                res += "Utilizacao do servico "+String.format("%.4f", utilizacao_serv)+"\n";
+                res += "Tempo de simulacao "+String.format("%.4f", s.getInstante())+"\n";
                 res += "Numero de clientes atendidos "+atendidos+"\n";
                 res += "Numero de clientes na fila "+fila.size()+"\n";
                 

@@ -13,8 +13,8 @@ public class Aleatorio {
 	static double exponencial (double m){
 		return (-m*Math.log(Math.random()));
 	}
-
-        static double[] normal(double m, double d, int randStream){
+        
+       static double[] normal(double m, double d, int randStream){
 		// System.out.println("Funcao normal a ser chamada... :-)");
 
 		double v1, v2, w;

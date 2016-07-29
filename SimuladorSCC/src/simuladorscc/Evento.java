@@ -11,7 +11,7 @@ package simuladorscc;
 public abstract class Evento {
 	protected double instante;  // Instante de ocorrencia do evento
 	protected Simulador s;      // Simulador onde ocorre o evento
-	protected Servico tipo; 		// Chegada, Transicao ou Saida
+	protected Servico tipo;     // Chegada, Transicao ou Saida
 
 	//Construtor
 	Evento (double i, Simulador s, Servico tipo){
